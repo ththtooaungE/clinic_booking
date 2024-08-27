@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const ScheduleSchema = new Schema({
     doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', default: null},
-    day: { type: String, default: null, enum:  ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']},
-    start: { type: String, default: null},
-    end: { type: String, default: null},
+    slot: { type: Number, default: 1},
+    start: { type: Date, default: null},
+    end: { type: Date, default: null},
     createdAt: { type: Date, default: mongoose.now}
 });
 
