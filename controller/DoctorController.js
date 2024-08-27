@@ -22,7 +22,7 @@ class DoctorController
             });
                 
             if(await doctor.save()) return res.send(doctor);
-            else return res.status(500).send({ message: error.message });
+            else throw Error('Something went wrong!');
             
         } catch(error) {
             return res.status(500).send({ message: error.message });

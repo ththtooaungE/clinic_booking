@@ -1,11 +1,13 @@
 const express = require('express');
 const route = express.Router();
 
-const Doctor = require('../models/doctors');
-const Schedule = require('../models/schedule');
 const DoctorController = require('../controller/DoctorController');
 const ScheduleController = require('../controller/ScheduleController');
+const AuthController = require('../controller/AuthController'); 
 
+route.post('/auth/register', AuthController.register);
+route.post('/auth/login', AuthController.login);
+route.post('/auth/logout', AuthController.logout);
 
 route.get('/doctors', DoctorController.all);
 route.post('/doctors', DoctorController.store);
