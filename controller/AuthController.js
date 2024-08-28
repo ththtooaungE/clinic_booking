@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const User = require("../models/user");
-const RefreshToken = require("../models/RefreshToken");
+const RefreshToken = require("../models/refreshToken");
 
 class AuthController
 {
