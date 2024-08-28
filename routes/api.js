@@ -1,19 +1,20 @@
 const express = require('express');
 const route = express.Router();
+const Middleware = require('../middleware/middleware');
 
 const DoctorController = require('../controller/DoctorController');
 const ScheduleController = require('../controller/ScheduleController');
 
-route.get('/doctors', DoctorController.all);
-route.post('/doctors', DoctorController.store);
+route.get('/doctors',DoctorController.all);
+route.post('/doctors',  Middleware.admin, DoctorController.store);
 route.get('/doctors/:id', DoctorController.single);
-route.put('/doctors/:id', DoctorController.update);
-route.delete('/doctors/:id', DoctorController.delete);
+route.put('/doctors/:id',  Middleware.admin, DoctorController.update);
+route.delete('/doctors/:id',  Middleware.admin, DoctorController.delete);
 
 route.get('/doctors/:doctorId/schedules', ScheduleController.all);
-route.post('/doctors/:doctorId/schedules', ScheduleController.store);
+route.post('/doctors/:doctorId/schedules',  Middleware.admin, ScheduleController.store);
 route.get('/doctors/:doctorId/schedules/:scheduleId', ScheduleController.single);
-route.put('/doctors/:doctorId/schedules/:scheduleId', ScheduleController.update);
-route.delete('/doctors/:doctorId/schedules/:scheduleId', ScheduleController.delete);
+route.put('/doctors/:doctorId/schedules/:scheduleId',  Middleware.admin, ScheduleController.update);
+route.delete('/doctors/:doctorId/schedules/:scheduleId',  Middleware.admin, ScheduleController.delete);
 
 module.exports = route;

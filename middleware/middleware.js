@@ -1,4 +1,5 @@
 var jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
 class Middleware
 {
@@ -17,6 +18,15 @@ class Middleware
             if(err) return res.status(401).send({message: "Invalid Token!"});
             else next();
         })
+    }
+
+    static async admin(req, res, next) {
+        const user = await User.findById(req.user.id);
+        if(user.role === "admin") {
+            next();
+        } else {
+            return res.status(403).send({message: "Must be admin!"});
+        }
     }
 }
 
