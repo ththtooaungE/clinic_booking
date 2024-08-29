@@ -5,6 +5,7 @@ const Middleware = require('../middleware/middleware');
 const DoctorController = require('../controller/DoctorController');
 const ScheduleController = require('../controller/ScheduleController');
 const BookingController = require('../controller/BookingController');
+const UserController = require('../controller/UserController');
 
 route.get('/doctors',DoctorController.all);
 route.post('/doctors',  Middleware.admin, DoctorController.store);
@@ -23,5 +24,11 @@ route.post('/schedules/:scheduleId/bookings', BookingController.store);
 route.get('/schedules/:scheduleId/bookings/:bookingId', BookingController.single);
 route.put('/schedules/:scheduleId/bookings/:bookingId', BookingController.update);
 route.delete('/schedules/:scheduleId/bookings/:bookingId', BookingController.delete);
+
+route.put('/bookings/:bookingId/update-status', BookingController.updateStatus);
+route.get('/users/:userId/bookings', BookingController.userBookings);
+
+route.get('/users', UserController.all);
+route.get('/users/:id', UserController.show);
 
 module.exports = route;

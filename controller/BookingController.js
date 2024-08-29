@@ -87,6 +87,34 @@ class BookingController
             return res.status(500).send({message: error.message});
         }
     }
+
+    static async updateStatus(req, res) {
+        try {
+            const booking = await Booking.findOne({ _id: req.params.bookingId});
+            if(!booking) return res.status(404).send({message: 'Booking Not found!'});
+
+            booking.status = req.body.status;
+            if(await booking.save()) return res.status(204).send({message: 'Status successfully updated!'});
+            else return res.status(500).send({message: 'Something went wrong!'});
+        } catch (error) {
+            return res.status(500).send({message: error.message});
+        }
+    }
+
+    static async userBookings(req, res) {
+        try {
+            const bookings = await Booking.find({ user: req.params.userId});
+
+            if(!bookings) return res.status(404).send({message: 'Not found!'});
+
+            return res.status(200).send({
+                message: 'Successfully retrieved!', 
+                data: bookings
+            });
+        } catch (error) {
+            return res.status(500).send({message: error.message});
+        }
+    }
 }
 
 module.exports = BookingController;
