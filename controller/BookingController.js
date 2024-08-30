@@ -59,10 +59,10 @@ class BookingController
             const booking = await Booking.findOne({ _id: req.params.bookingId, schedule: req.params.scheduleId});
             if(!booking) return res.status(404).send({message: 'Not found!'});
 
-            booking.name = req.body.name;
-            booking.age = req.body.age;
-            booking.note = req.body.note;
-            booking.status = req.body.status;
+            if(req.body.name !== undefined && req.body.name !== null) booking.name = req.body.name;
+            if(req.body.age !== undefined && req.body.age !== null) booking.age = req.body.age;
+            if(req.body.note !== undefined && req.body.note !== null) booking.note = req.body.note;
+            if(req.body.status !== undefined && req.body.status !== null) booking.status = req.body.status;
 
             if (await booking.save()) {
                 return res.status(200).send({message: 'Successfully updated!', data: booking});

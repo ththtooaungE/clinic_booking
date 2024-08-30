@@ -79,8 +79,9 @@ class ScheduleController
             let schedule = await Schedule.findOne({ _id: scheduleId, doctor: doctorId });
             if (!schedule) return res.status(404).send({message: 'Not found!'});
     
-            schedule.start = new Date(req.body.start);
-            schedule.end = new Date(req.body.end);
+            if(req.body.slot !== undefined && req.body.slot !== null) schedule.slot = req.body.slot;
+            if(req.body.start !== undefined && req.body.start !== null) schedule.start = new Date(req.body.start);
+            if(req.body.end !== undefined && req.body.end !== null) schedule.end = new Date(req.body.end);
         
             if(await schedule.save()) return res.status(200).send({
                 message: "Successfully updated!",

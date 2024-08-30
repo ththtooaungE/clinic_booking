@@ -6,7 +6,7 @@ const RefreshToken = require("../models/refresh-token");
 class AuthController
 {
     static async register(req, res) {
-        try {
+        try {            
             const saltRounds = 10;
             bcrypt.genSalt(saltRounds, function(err, salt) {
                 bcrypt.hash(req.body.password, salt,async function(err, hash) {
@@ -16,6 +16,7 @@ class AuthController
                         email: req.body.email,
                         password: hash,
                         phone: req.body.phone,
+                        // role: 'admin',
                         age: req.body.age,
                         city: req.body.city,
                         country: req.body.country
