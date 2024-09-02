@@ -36,8 +36,11 @@ route.put('/bookings/:bookingId/update-status', BookingController.updateStatus);
 route.get('/users/:userId/bookings', BookingController.userBookings);
 
 // Users
+route.get('/users/profile', UserController.profile);
+route.put('/users/profile-update', UserController.update);  
+
 route.get('/users', Middleware.admin, UserController.all);
 route.get('/users/:id', Middleware.admin, UserController.show);
-route.get('/users/profile');
+route.delete('/users/:id', Middleware.admin, UserController.delete);
 
 module.exports = route;
