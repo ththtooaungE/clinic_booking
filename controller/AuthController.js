@@ -16,7 +16,7 @@ class AuthController
                         email: req.body.email,
                         password: hash,
                         phone: req.body.phone,
-                        // role: 'admin',
+                        role: req.body.role,
                         age: req.body.age,
                         city: req.body.city,
                         country: req.body.country

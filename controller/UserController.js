@@ -27,6 +27,38 @@ class UserController
             return res.status(500).send({message: error.message});
         }
     }
+
+    static async update(req, res){
+
+    }
+
+    static async delete(req, res) {
+        try {
+            const user = await User.deleteOne(req.params.id);
+
+            console.log(user);
+            
+            return res.status(204).send({
+                message: 'User Successfully deleted!'
+            })
+            
+        } catch (error) {
+            
+        }
+    }
+
+    static async profile(req, res) {
+        try {
+            const user = await User.findById(req.user.id);
+
+            return res.status(200).send({
+                message: 'Profile Successfully retrieved!',
+                data: user
+            }); 
+        } catch (error) {
+            return res.status(500).send({message: error.message});
+        }
+    }
 }
 
 module.exports = UserController;

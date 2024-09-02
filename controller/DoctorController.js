@@ -13,7 +13,12 @@ class DoctorController
 
     static async store(req, res) {
         try {
-            let doctor = new Doctor({
+            let doctor = await Doctor.findOne({user: req.user.id});
+
+            if(doctor) res.status(400).send({message: "Already created a doctor profile!"});
+
+            doctor = new Doctor({
+                user: req.user.id,
                 name: req.body.name,
                 title: req.body.title,
                 specialty: req.body.specialty,
@@ -42,7 +47,7 @@ class DoctorController
 
     static async update(req, res) {
         try {
-            let doctor = await Doctor.findById(req.params.id);
+            let doctor = await Doctor.findOne({ _id: req.params.id, user: req.user.id });            
             if(!doctor) return res.status(404).send({message: 'Doctor Not Found!'});
             
             if (req.body.name !== undefined && req.body.name !== null) doctor.name = req.body.name;
@@ -55,6 +60,8 @@ class DoctorController
             else throw Error('Something went wrong!');
             
         } catch (error) {
+            console.log(error);
+            
             return res.status(500).send({ message: error.message });
         }
     }
@@ -68,6 +75,19 @@ class DoctorController
             else throw Error('Something went wrong!');
 
         } catch(error) {
+            return res.status(500).send({ message: error.message });
+        }
+    }
+
+
+    static async profile(req, res) {
+        try {
+            const doctor = await Doctor.findOne({user: req.user.id});
+
+            if(!doctor) return res.status(404).send({message: 'Have not created a doctor profile!'});
+
+            return res.send(doctor);
+        } catch (error) {
             return res.status(500).send({ message: error.message });
         }
     }

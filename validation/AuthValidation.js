@@ -6,9 +6,10 @@ class AuthValidation
 
         const schema = Joi.object({
             name: Joi.string().max(30),
-            username: Joi.string().alphanum().min(4).max(30),
+            username: Joi.string().pattern(new RegExp('^[a-z0-9_]+$')).min(4).max(30),
             email: Joi.string().email(),
             password: Joi.string().min(5).pattern(new RegExp('^[a-zA-Z0-9]+$')),
+            role: Joi.string().allow(null).valid('user', 'doctor'),
             phone: Joi.string().pattern( new RegExp('^[0-9]+$')),
             age: Joi.number(),
             city: Joi.string(),

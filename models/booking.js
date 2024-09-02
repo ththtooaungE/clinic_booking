@@ -8,7 +8,7 @@ const BookingSchema =  new mongoose.Schema({
     age: { type: Number, default: null},
     note: { type: String, default: null},
     token: { type: String, default: null},
-    status: { type: String, default: 'upcoming', enum: ['upcoming', 'finished', 'cancelled', 'failed']}
+    status: { type: String, enum: ['upcoming', 'finished', 'cancelled', 'failed'], default: 'upcoming'}
 });
 
 const Booking = mongoose.model('Booking', BookingSchema);

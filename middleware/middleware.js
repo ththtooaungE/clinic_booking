@@ -22,11 +22,24 @@ class Middleware
 
     static async admin(req, res, next) {
         const user = await User.findById(req.user.id);
-        if(user.role === "admin") {
-            next();
-        } else {
-            return res.status(403).send({message: "Must be admin!"});
-        }
+
+        if(user.role === "admin") next();
+        else return res.status(403).send({message: "Must be admin!"});
+    }
+
+
+    static async doctor(req, res, next) {
+        const user= await User.findById(req.user.id);
+
+        if (user.role === "doctor") next();
+        else return res.status(403).send({message: "Must be doctor"});
+    }
+
+    static async adminOrDoctor(req, res, next) {
+        const user= await User.findById(req.user.id);
+
+        if (user.role === "admin" || user.role === "doctor") next();
+        else return res.status(403).send({message: "Must be admin or doctor"});
     }
 }
 
