@@ -1,6 +1,6 @@
 const Booking = require("../models/booking");
 const Schedule = require("../models/schedule");
-
+const User = require("../models/user");
 
 class BookingController
 {
@@ -22,6 +22,14 @@ class BookingController
             if (!await Schedule.findById(req.params.scheduleId)) {
                 return res.status(404).send({message: 'Schedule Not Found!'});
             }
+
+            const user = await User.findById(req.user.id);
+            if(user.suspensationUntil > new Date(new Date().toISOString())) {
+                return res.status(403).send({
+                    message: 'You are suspended! Please Contact Admin!'
+                    });
+            }
+                
 
             const count = await Booking.countDocuments({schedule: req.params.scheduleId});
 
@@ -93,8 +101,32 @@ class BookingController
             const booking = await Booking.findOne({ _id: req.params.bookingId});
             if(!booking) return res.status(404).send({message: 'Booking Not found!'});
 
+            if(req.body.status === 'cancelled' || req.body.status === 'failed') {
+                
+                const user = await User.findById(booking.user);
+                user.cancellationCount = user.cancellationCount + 1;
+                
+                if(user.cancellationCount === 3) {
+                    
+                    const date = new Date();
+                    const year = date.getFullYear();
+                    const month = date.getMonth();  // Months are 0-based in JavaScript
+                    const day = date.getDate();
+                    const hour = date.getHours();
+                    const minute = date.getMinutes();
+
+                    // Use individual components to avoid UTC conversion
+                    user.suspensationUntil = new Date(year, month, (day + 3), hour, minute); // gets ISO date
+                } else if (user.cancellationCount > 3 || user.suspensationUntil > new Date(new Date().toISOString())) {
+                    user.cancellationCount = 1;
+                }
+                await user.save(); // do we need to use save
+            }
+
             booking.status = req.body.status;
-            if(await booking.save()) return res.status(204).send({message: 'Status successfully updated!'});
+            const isSave = await booking.save();
+
+            if(isSave) return res.status(204).send({message: 'Status successfully updated!'});
             else return res.status(500).send({message: 'Something went wrong!'});
         } catch (error) {
             return res.status(500).send({message: error.message});

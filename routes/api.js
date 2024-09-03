@@ -32,7 +32,7 @@ route.get('/schedules/:scheduleId/bookings/:bookingId', BookingController.single
 route.put('/schedules/:scheduleId/bookings/:bookingId', BookingValidation.update, BookingController.update);
 route.delete('/schedules/:scheduleId/bookings/:bookingId', BookingController.delete);
 
-route.put('/bookings/:bookingId/update-status', BookingController.updateStatus);
+route.put('/bookings/:bookingId/update-status', BookingValidation.update, BookingController.updateStatus);
 route.get('/users/:userId/bookings', BookingController.userBookings);
 
 // Users

@@ -7,7 +7,7 @@ const BookingSchema =  new mongoose.Schema({
     name: { type: String, default: null},
     age: { type: Number, default: null},
     note: { type: String, default: null},
-    token: { type: String, default: null},
+    token: { type: Number, default: null},
     status: { type: String, enum: ['upcoming', 'finished', 'cancelled', 'failed'], default: 'upcoming'}
 });
 
