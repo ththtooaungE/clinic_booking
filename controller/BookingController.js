@@ -1,5 +1,6 @@
 const Booking = require("../models/booking");
 const Schedule = require("../models/schedule");
+const SuspensationRecord = require("../models/suspensation-records");
 const User = require("../models/user");
 
 class BookingController
@@ -106,7 +107,10 @@ class BookingController
                 const user = await User.findById(booking.user);
                 user.cancellationCount = user.cancellationCount + 1;
                 
+                console.log(user.cancellationCount);
+                
                 if(user.cancellationCount === 3) {
+                    console.log('=3 is working');
                     
                     const date = new Date();
                     const year = date.getFullYear();
@@ -117,16 +121,22 @@ class BookingController
 
                     // Use individual components to avoid UTC conversion
                     user.suspensationUntil = new Date(year, month, (day + 3), hour, minute); // gets ISO date
-                } else if (user.cancellationCount > 3 || user.suspensationUntil > new Date(new Date().toISOString())) {
+                } else if (user.cancellationCount > 3 && user.suspensationUntil < new Date(new Date().toISOString())) {
+                    console.log('=4 is working');
                     user.cancellationCount = 1;
+                    const suspensationRecord = new SuspensationRecord({
+                        user: req.user.id,
+                        suspensationUntil: user.suspensationUntil,
+                        createdAt: new Date()
+                    });
+                    await suspensationRecord.save();
                 }
                 await user.save(); // do we need to use save
             }
 
             booking.status = req.body.status;
-            const isSave = await booking.save();
 
-            if(isSave) return res.status(204).send({message: 'Status successfully updated!'});
+            if(await booking.save()) return res.status(204).send({message: 'Status successfully updated!'});
             else return res.status(500).send({message: 'Something went wrong!'});
         } catch (error) {
             return res.status(500).send({message: error.message});

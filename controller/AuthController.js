@@ -44,7 +44,7 @@ class AuthController
                         name: user.name
                     };
 
-                    const accessToken = jwt.sign(userInfo, "thet!@#123", {expiresIn: "1h"});
+                    const accessToken = jwt.sign(userInfo, "thet!@#123", {expiresIn: "9h"});
                     const refreshToken = jwt.sign(userInfo, 'RefreshToken');
 
                     new RefreshToken({
@@ -85,7 +85,7 @@ class AuthController
             }
             else {
                 const user = await User.findOne({email: refreshToken.email});
-                const accessToken = jwt.sign({id: user.id, name: user.name}, "thet!@#123", { expiresIn: '1h'});
+                const accessToken = jwt.sign({id: user.id, name: user.name}, "thet!@#123", { expiresIn: '9h'});
                 
                 return res.status(200).send({
                     message: 'Access Token is successfully created!',
