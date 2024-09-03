@@ -100,44 +100,41 @@ class BookingController
     static async updateStatus(req, res) {
         try {
             const booking = await Booking.findOne({ _id: req.params.bookingId});
-            if(!booking) return res.status(404).send({message: 'Booking Not found!'});
+            if(!booking) {
+                return res.status(404).send({message: 'Booking Not found!'});
+            }
 
-            if(req.body.status === 'cancelled' || req.body.status === 'failed') {
-                
+            if(['cancelled', 'failed'].includes(req.body.status)) {
                 const user = await User.findById(booking.user);
                 user.cancellationCount = user.cancellationCount + 1;
-                
-                console.log(user.cancellationCount);
-                
+                                
                 if(user.cancellationCount === 3) {
-                    console.log('=3 is working');
+                    const currentDate = new Date();
+                    const suspensionsCount =     await SuspensationRecord.countDocuments({ user: user._id });
+                    const suspensionDays = suspensionsCount > 3 ? 14 : 7;
                     
-                    const date = new Date();
-                    const year = date.getFullYear();
-                    const month = date.getMonth();  // Months are 0-based in JavaScript
-                    const day = date.getDate();
-                    const hour = date.getHours();
-                    const minute = date.getMinutes();
+                    user.suspensationUntil = new Date(currentDate.setDate(currentDate.getDate() + suspensionDays));
 
-                    // Use individual components to avoid UTC conversion
-                    user.suspensationUntil = new Date(year, month, (day + 3), hour, minute); // gets ISO date
-                } else if (user.cancellationCount > 3 && user.suspensationUntil < new Date(new Date().toISOString())) {
-                    console.log('=4 is working');
-                    user.cancellationCount = 1;
+                    // creating Suspensation Record
                     const suspensationRecord = new SuspensationRecord({
                         user: req.user.id,
                         suspensationUntil: user.suspensationUntil,
                         createdAt: new Date()
                     });
                     await suspensationRecord.save();
+                } else if (user.cancellationCount > 3 && user.suspensationUntil < new Date()) {
+                    user.cancellationCount = 1; // resetting the count after being not suspended
                 }
-                await user.save(); // do we need to use save
+                await user.save();
             }
-
             booking.status = req.body.status;
 
-            if(await booking.save()) return res.status(204).send({message: 'Status successfully updated!'});
-            else return res.status(500).send({message: 'Something went wrong!'});
+            const updatedBooking = await booking.save();
+            if (updatedBooking) {
+                return res.status(204).send({ message: 'Status successfully updated!' });
+            } else {
+                return res.status(500).send({ message: 'Something went wrong!' });
+            }
         } catch (error) {
             return res.status(500).send({message: error.message});
         }
