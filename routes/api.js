@@ -26,21 +26,22 @@ route.put('/doctors/:doctorId/schedules/:scheduleId',  Middleware.adminOrDoctor,
 route.delete('/doctors/:doctorId/schedules/:scheduleId',  Middleware.adminOrDoctor, ScheduleController.delete);
 
 // Bookings
-route.get('/schedules/:scheduleId/bookings', BookingController.all);
+route.get('/schedules/:scheduleId/bookings', Middleware.adminOrDoctor, BookingController.all);
 route.post('/schedules/:scheduleId/bookings', BookingValidation.store, BookingController.store);
 route.get('/schedules/:scheduleId/bookings/:bookingId', BookingController.single);
 route.put('/schedules/:scheduleId/bookings/:bookingId', BookingValidation.update, BookingController.update);
-route.delete('/schedules/:scheduleId/bookings/:bookingId', BookingController.delete);
+// route.delete('/schedules/:scheduleId/bookings/:bookingId', BookingController.delete);
 
 route.put('/bookings/:bookingId/update-status', BookingValidation.update, BookingController.updateStatus);
 route.get('/users/:userId/bookings', BookingController.userBookings);
 
 // Users
 route.get('/users/profile', UserController.profile);
-route.put('/users/profile-update', UserController.update);  
+route.put('/users/profile', UserController.update);  
 
 route.get('/users', Middleware.admin, UserController.all);
 route.get('/users/:id', Middleware.admin, UserController.show);
 route.delete('/users/:id', Middleware.admin, UserController.delete);
+route.put('/users/:id/update-suspensation-date', Middleware.admin, UserController.updateSuspensationUntil);
 
 module.exports = route;

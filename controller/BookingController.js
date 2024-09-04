@@ -20,19 +20,26 @@ class BookingController
 
     static async store(req, res) {
         try {
-            if (!await Schedule.findById(req.params.scheduleId)) {
+            const schedule = await Schedule.findById(req.params.scheduleId);
+            if (!schedule) {
                 return res.status(404).send({message: 'Schedule Not Found!'});
             }
 
             const user = await User.findById(req.user.id);
+            console.log(user.suspensationUntil);
+            
             if(user.suspensationUntil > new Date(new Date().toISOString())) {
                 return res.status(403).send({
                     message: 'You are suspended! Please Contact Admin!'
                     });
             }
                 
-
             const count = await Booking.countDocuments({schedule: req.params.scheduleId});
+            if ( count >= schedule.slot) {
+                return res.status(403).send({
+                    message: 'Full slots!'
+                });
+            }
 
             const booking = new Booking({
                 schedule: req.params.scheduleId,
