@@ -78,14 +78,14 @@ class UserController
         }
     }
 
-    static async updateSuspensationUntil(req, res) {
+    static async updateSuspensionUntil(req, res) {
         try {
             const user = await User.findById(req.params.id);            
-            user.suspensationUntil = req.body.suspensationUntil;
+            user.suspensionUntil = req.body.suspensionUntil;
 
             if(await user.save()) {
                 return res.status(204).send({
-                    message: 'Suspensation Successfully updated'
+                    message: 'Suspension Successfully updated'
                 });
             } else {
                 throw new Error("Something went wrong!");

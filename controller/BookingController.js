@@ -26,9 +26,8 @@ class BookingController
             }
 
             const user = await User.findById(req.user.id);
-            console.log(user.suspensationUntil);
             
-            if(user.suspensationUntil > new Date(new Date().toISOString())) {
+            if(user.suspensionUntil > new Date(new Date().toISOString())) {
                 return res.status(403).send({
                     message: 'You are suspended! Please Contact Admin!'
                     });
@@ -120,16 +119,16 @@ class BookingController
                     const suspensionsCount =     await SuspensationRecord.countDocuments({ user: user._id });
                     const suspensionDays = suspensionsCount > 3 ? 14 : 7;
                     
-                    user.suspensationUntil = new Date(currentDate.setDate(currentDate.getDate() + suspensionDays));
+                    user.suspensionUntil = new Date(currentDate.setDate(currentDate.getDate() + suspensionDays));
 
                     // creating Suspensation Record
                     const suspensationRecord = new SuspensationRecord({
                         user: req.user.id,
-                        suspensationUntil: user.suspensationUntil,
+                        suspensionUntil: user.suspensionUntil,
                         createdAt: new Date()
                     });
                     await suspensationRecord.save();
-                } else if (user.cancellationCount > 3 && user.suspensationUntil < new Date()) {
+                } else if (user.cancellationCount > 3 && user.suspensionUntil < new Date()) {
                     user.cancellationCount = 1; // resetting the count after being not suspended
                 }
                 await user.save();

@@ -14,7 +14,7 @@ const UserSchema = new Schema({
     birthday: { type: Date, default: null },
     // status: { type: String, default: "isActive"},
     cancellationCount: { type: Number, default: 0 },
-    suspensationUntil: { type: Date, default: null }
+    suspensionUntil: { type: Date, default: null }
 })
 
 const User = mongoose.model('User', UserSchema);
