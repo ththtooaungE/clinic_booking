@@ -42,6 +42,6 @@ route.put('/users/profile', UserController.update);
 route.get('/users', Middleware.admin, UserController.all);
 route.get('/users/:id', Middleware.admin, UserController.show);
 route.delete('/users/:id', Middleware.admin, UserController.delete);
-route.put('/users/:id/update-suspensation-date', Middleware.admin, UserController.updateSuspensationUntil);
+route.put('/users/:id/update-suspensation-date', Middleware.admin, UserController.updateSuspensionUntil);
 
 module.exports = route;
