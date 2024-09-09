@@ -9,6 +9,7 @@ const UserController = require('../controller/UserController');
 const ScheduleValidation = require('../validation/ScheduleValidation');
 const DoctorValidation = require('../validation/DoctorValidation');
 const BookingValidation = require('../validation/BookingValidation');
+const MessageController = require('../controller/MessageController');
 
 // Doctors
 route.get('/doctors/doctor-profile', DoctorController.profile);
@@ -43,5 +44,9 @@ route.get('/users', Middleware.admin, UserController.all);
 route.get('/users/:id', Middleware.admin, UserController.show);
 route.delete('/users/:id', Middleware.admin, UserController.delete);
 route.put('/users/:id/update-suspensation-date', Middleware.admin, UserController.updateSuspensionUntil);
+
+route.get('/messages/chats', Middleware.auth, MessageController.getChats);
+route.get('/messages/:id', Middleware.auth, MessageController.getMessages);
+route.delete('/messages/:id', MessageController.delete);
 
 module.exports = route;
